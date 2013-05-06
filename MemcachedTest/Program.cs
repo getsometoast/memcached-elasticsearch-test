@@ -13,13 +13,12 @@ namespace MemcachedTest
         static void Main(string[] args)
         {
             var elasticsearchConnection = "http://192.168.56.1:9200/";
-            var memcachedConnection = "http://10.211.55.10:11211/";
-            //var rabbitMqConnection = "http://127.0.0.1:54325/";
-
-            var blah = new Enyim.Caching.Configuration.MemcachedClientConfiguration();
-            blah.AddServer(memcachedConnection);
+            //var memcachedConnection = "http://10.211.55.10:11211/"; - done in app.config
+            //var rabbitMqConnection = "http://127.0.0.1:54325/"; - not using for this test...
 
             // setup memcached
+
+
             // setup elasticsearch
             var connection = new ConnectionSettings(new Uri(elasticsearchConnection));
             var client = new ElasticClient(connection);
