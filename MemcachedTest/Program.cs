@@ -14,9 +14,12 @@ namespace MemcachedTest
     {
         static void Main(string[] args)
         {
+            // local vm of elasticsearch:
             var elasticsearchConnection = "http://192.168.56.1:9200/";
-            //var memcachedConnection = "http://10.211.55.10:11211/"; - done in app.config
-            //var rabbitMqConnection = "http://127.0.0.1:54325/"; - not using for this test...
+
+            /*{"The value of the property 'type' cannot be parsed. The error is: The type 'Enyim.Caching.DefaultNodeLocator, Enyim.Caching' 
+             * cannot be resolved. Please verify the spelling is correct or that the full type name is provided. 
+             * (C:\\work\\memcached-elasticsearch-test\\MemcachedTest\\bin\\Debug\\MemcachedTest.vshost.exe.Config line 16)"}*/
 
             // setup memcached
             var memClient = new MemcachedClient();
@@ -31,6 +34,7 @@ namespace MemcachedTest
 
             // check the alias exists in memcached
             var aliasExists = memClient.Get(data.UserId.ToString()) as bool?;
+
             AliasParams alias = null;
 
             // if not:
@@ -53,33 +57,16 @@ namespace MemcachedTest
             }
 
             // insert data into elasticsearch via the alias
-            elasticClient.Index<Data>(data, new IndexParameters { Routing = alias.Routing }); // against the alias - how in NEST?!!
+            elasticClient.Index<Data>(data, new IndexParameters { Routing = data.UserId.ToString() });
         }
     }
 
     // some class representing the model
-    private class Data
+    public class Data
     {
         public string Id { get; set; }
         public int UserId { get; set; }
         public int TrackId { get; set; }
         public string Blah { get; set; }
-    }
-
-    private class AliasTranscoder : ITranscoder
-    {
-        public object Deserialize(CacheItem item)
-        {
-            Console.WriteLine(item.Data.Count);
-
-            return null;
-        }
-
-        public CacheItem Serialize(object value)
-        {
-            Console.WriteLine(value.ToString());
-
-            return new CacheItem();
-        }
     }
 }
