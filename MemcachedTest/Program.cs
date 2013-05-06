@@ -33,7 +33,6 @@ namespace MemcachedTest
                 // if not:
                 if (!aliasExists.HasValue)
                 {
-
                     // create the alias
                     alias = new AliasParams
                     {
